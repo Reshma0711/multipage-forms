@@ -74,3 +74,35 @@ const MultiStepForm = () => {
 };
 
 export default MultiStepForm;
+
+
+
+
+
+// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+// import { useForm, FormProvider } from "react-hook-form";
+// import { Contact } from "./pages/Contact";
+// import { Education } from "./pages/Education";
+// import { About } from "./pages/About";
+// import { Confirm } from "./pages/Confirm";
+// import { Stepper } from "./pages/Stepper";
+
+// export const App = () => {
+//   const methods = useForm({ mode: "onSubmit" });
+
+//   return (
+//     <div className="App">
+//       <FormProvider {...methods}>
+//         <Router>
+//           <Stepper />
+//           <Routes>
+//             <Route path="/" element={<Contact />} />
+//             <Route path="/education" element={<Education />} />
+//             <Route path="/about" element={<About />} />
+//             <Route path="/confirm" element={<Confirm />} />
+//           </Routes>
+//         </Router>
+//       </FormProvider>
+//     </div>
+//   );
+// };
