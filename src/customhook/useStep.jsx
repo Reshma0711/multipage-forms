@@ -18,12 +18,11 @@ const useMultiStepForm = (steps) => {
   const isLastStep = stepCount === steps.length - 1;
   const isFirstStep = stepCount === 0;
 
-
   const goToStep = (stepIndex) => {
     if (stepIndex >= 0 && stepIndex < steps.length) {
       setStepCount(stepIndex);
     }
-  }
+  };
   return {
     step: steps[stepCount], // Current step component
     stepCount,

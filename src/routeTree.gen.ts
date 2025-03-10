@@ -12,9 +12,15 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as AboutImport } from './routes/about'
-import { Route as IndexImport } from './routes/index'
+import { Route as AuthImport } from './routes/_auth'
+import { Route as LoginImport } from './routes/Login'
 import { Route as PostsIndexImport } from './routes/posts/index'
+import { Route as CommentsIndexImport } from './routes/comments/index'
 import { Route as PostsPostIdImport } from './routes/posts/$postId'
+import { Route as CommentsTest1Import } from './routes/comments/test1'
+import { Route as AuthTest3Import } from './routes/_auth/test3'
+import { Route as AuthTest2Import } from './routes/_auth/test2'
+import { Route as AuthHomeImport } from './routes/_auth/Home'
 
 // Create/Update Routes
 
@@ -24,9 +30,14 @@ const AboutRoute = AboutImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
-  id: '/',
-  path: '/',
+const AuthRoute = AuthImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LoginRoute = LoginImport.update({
+  id: '/Login',
+  path: '/Login',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -36,21 +47,58 @@ const PostsIndexRoute = PostsIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const CommentsIndexRoute = CommentsIndexImport.update({
+  id: '/comments/',
+  path: '/comments/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const PostsPostIdRoute = PostsPostIdImport.update({
   id: '/posts/$postId',
   path: '/posts/$postId',
   getParentRoute: () => rootRoute,
 } as any)
 
+const CommentsTest1Route = CommentsTest1Import.update({
+  id: '/comments/test1',
+  path: '/comments/test1',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthTest3Route = AuthTest3Import.update({
+  id: '/test3',
+  path: '/test3',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthTest2Route = AuthTest2Import.update({
+  id: '/test2',
+  path: '/test2',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthHomeRoute = AuthHomeImport.update({
+  id: '/Home',
+  path: '/Home',
+  getParentRoute: () => AuthRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+    '/Login': {
+      id: '/Login'
+      path: '/Login'
+      fullPath: '/Login'
+      preLoaderRoute: typeof LoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
     '/about': {
@@ -60,11 +108,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
+    '/_auth/Home': {
+      id: '/_auth/Home'
+      path: '/Home'
+      fullPath: '/Home'
+      preLoaderRoute: typeof AuthHomeImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/test2': {
+      id: '/_auth/test2'
+      path: '/test2'
+      fullPath: '/test2'
+      preLoaderRoute: typeof AuthTest2Import
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/test3': {
+      id: '/_auth/test3'
+      path: '/test3'
+      fullPath: '/test3'
+      preLoaderRoute: typeof AuthTest3Import
+      parentRoute: typeof AuthImport
+    }
+    '/comments/test1': {
+      id: '/comments/test1'
+      path: '/comments/test1'
+      fullPath: '/comments/test1'
+      preLoaderRoute: typeof CommentsTest1Import
+      parentRoute: typeof rootRoute
+    }
     '/posts/$postId': {
       id: '/posts/$postId'
       path: '/posts/$postId'
       fullPath: '/posts/$postId'
       preLoaderRoute: typeof PostsPostIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/comments/': {
+      id: '/comments/'
+      path: '/comments'
+      fullPath: '/comments'
+      preLoaderRoute: typeof CommentsIndexImport
       parentRoute: typeof rootRoute
     }
     '/posts/': {
@@ -79,48 +162,117 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface AuthRouteChildren {
+  AuthHomeRoute: typeof AuthHomeRoute
+  AuthTest2Route: typeof AuthTest2Route
+  AuthTest3Route: typeof AuthTest3Route
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthHomeRoute: AuthHomeRoute,
+  AuthTest2Route: AuthTest2Route,
+  AuthTest3Route: AuthTest3Route,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/Login': typeof LoginRoute
+  '': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
+  '/Home': typeof AuthHomeRoute
+  '/test2': typeof AuthTest2Route
+  '/test3': typeof AuthTest3Route
+  '/comments/test1': typeof CommentsTest1Route
   '/posts/$postId': typeof PostsPostIdRoute
+  '/comments': typeof CommentsIndexRoute
   '/posts': typeof PostsIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/Login': typeof LoginRoute
+  '': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
+  '/Home': typeof AuthHomeRoute
+  '/test2': typeof AuthTest2Route
+  '/test3': typeof AuthTest3Route
+  '/comments/test1': typeof CommentsTest1Route
   '/posts/$postId': typeof PostsPostIdRoute
+  '/comments': typeof CommentsIndexRoute
   '/posts': typeof PostsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
+  '/Login': typeof LoginRoute
+  '/_auth': typeof AuthRouteWithChildren
   '/about': typeof AboutRoute
+  '/_auth/Home': typeof AuthHomeRoute
+  '/_auth/test2': typeof AuthTest2Route
+  '/_auth/test3': typeof AuthTest3Route
+  '/comments/test1': typeof CommentsTest1Route
   '/posts/$postId': typeof PostsPostIdRoute
+  '/comments/': typeof CommentsIndexRoute
   '/posts/': typeof PostsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/posts/$postId' | '/posts'
+  fullPaths:
+    | '/Login'
+    | ''
+    | '/about'
+    | '/Home'
+    | '/test2'
+    | '/test3'
+    | '/comments/test1'
+    | '/posts/$postId'
+    | '/comments'
+    | '/posts'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/posts/$postId' | '/posts'
-  id: '__root__' | '/' | '/about' | '/posts/$postId' | '/posts/'
+  to:
+    | '/Login'
+    | ''
+    | '/about'
+    | '/Home'
+    | '/test2'
+    | '/test3'
+    | '/comments/test1'
+    | '/posts/$postId'
+    | '/comments'
+    | '/posts'
+  id:
+    | '__root__'
+    | '/Login'
+    | '/_auth'
+    | '/about'
+    | '/_auth/Home'
+    | '/_auth/test2'
+    | '/_auth/test3'
+    | '/comments/test1'
+    | '/posts/$postId'
+    | '/comments/'
+    | '/posts/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  LoginRoute: typeof LoginRoute
+  AuthRoute: typeof AuthRouteWithChildren
   AboutRoute: typeof AboutRoute
+  CommentsTest1Route: typeof CommentsTest1Route
   PostsPostIdRoute: typeof PostsPostIdRoute
+  CommentsIndexRoute: typeof CommentsIndexRoute
   PostsIndexRoute: typeof PostsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  LoginRoute: LoginRoute,
+  AuthRoute: AuthRouteWithChildren,
   AboutRoute: AboutRoute,
+  CommentsTest1Route: CommentsTest1Route,
   PostsPostIdRoute: PostsPostIdRoute,
+  CommentsIndexRoute: CommentsIndexRoute,
   PostsIndexRoute: PostsIndexRoute,
 }
 
@@ -134,20 +286,49 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.jsx",
       "children": [
-        "/",
+        "/Login",
+        "/_auth",
         "/about",
+        "/comments/test1",
         "/posts/$postId",
+        "/comments/",
         "/posts/"
       ]
     },
-    "/": {
-      "filePath": "index.jsx"
+    "/Login": {
+      "filePath": "Login.jsx"
+    },
+    "/_auth": {
+      "filePath": "_auth.jsx",
+      "children": [
+        "/_auth/Home",
+        "/_auth/test2",
+        "/_auth/test3"
+      ]
     },
     "/about": {
       "filePath": "about.jsx"
     },
+    "/_auth/Home": {
+      "filePath": "_auth/Home.jsx",
+      "parent": "/_auth"
+    },
+    "/_auth/test2": {
+      "filePath": "_auth/test2.jsx",
+      "parent": "/_auth"
+    },
+    "/_auth/test3": {
+      "filePath": "_auth/test3.jsx",
+      "parent": "/_auth"
+    },
+    "/comments/test1": {
+      "filePath": "comments/test1.jsx"
+    },
     "/posts/$postId": {
       "filePath": "posts/$postId.jsx"
+    },
+    "/comments/": {
+      "filePath": "comments/index.jsx"
     },
     "/posts/": {
       "filePath": "posts/index.jsx"
