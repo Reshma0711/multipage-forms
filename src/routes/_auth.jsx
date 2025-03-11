@@ -10,11 +10,37 @@ function RouteComponent() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token); 
+    if (token) {
+    
+      try {
+        const expiry = JSON.parse(atob(token.split(".")[1])).exp;
+        console.log("Token Expiry:", expiry);
+        
+        const isExpired = expiry < Date.now() / 1000;
+        console.log("Is Token Expired?", isExpired);
+  
+        if (isExpired) {
+          
+          localStorage.removeItem("token");
+          setIsAuthenticated(false);
+        } else {
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error("Invalid token:", error);
+        setIsAuthenticated(false);
+      }
+    } else {
+      setIsAuthenticated(false);
+    }
   }, []);
 
   if (!isAuthenticated) {
-    return <p className="text-red-500 text-center mt-5">Please login to access this page.</p>;
+    return (
+      <p className="text-red-500 text-center mt-5">
+        Please login to access this page.
+      </p>
+    );
   }
 
   return (
