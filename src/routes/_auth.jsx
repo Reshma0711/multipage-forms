@@ -13,6 +13,7 @@ function RouteComponent() {
     if (token) {
     
       try {
+       
         const expiry = JSON.parse(atob(token.split(".")[1])).exp;
         console.log("Token Expiry:", expiry);
         
@@ -42,7 +43,6 @@ function RouteComponent() {
       </p>
     );
   }
-
   return (
     <div>
       <Outlet />
